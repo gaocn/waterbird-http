@@ -23,7 +23,7 @@ public class HttpServerException extends HttpException{
         if(status.getCode() >= 500) {
             exceptionType = ServerException.ServerInternalError;
         } else {
-            exceptionType = ServerException.ServerRejectClien;
+            exceptionType = ServerException.ServerRejectClient;
         }
     }
 

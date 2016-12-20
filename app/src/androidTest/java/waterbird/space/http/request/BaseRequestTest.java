@@ -13,8 +13,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import waterbird.space.http.log.HttpLog;
-import waterbird.space.http.parser.DataParser;
-import waterbird.space.http.parser.TestDataParser;
 import waterbird.space.http.request.builder.JsonQueryBuilder;
 import waterbird.space.http.request.param.CacheMode;
 import waterbird.space.http.request.param.HttpMethods;
@@ -47,13 +45,8 @@ public class BaseRequestTest {
         LinkedHashMap<String, String> requestParams = new LinkedHashMap<String, String>();
         requestParams.put("parent=govind", "md5=gab34febc412");
 
-        request = new BaseRequest<String>("userManagement/add?id=2&name=govind&pwd=123") {
-            @Override
-            public DataParser<String> createDataParser() {
-                return new TestDataParser();
-            }
-        };
-        request.setBaseUrl("www.govind.space")
+        request = new ExampleBaseRequest("userManagement/add?id=2&name=govind&pwd=123");
+        request .setBaseUrl("www.govind.space")
                 .setId(20164502465878L)
                 .setMethod(HttpMethods.GET)
                 .setTag(this.getClass().getSimpleName())

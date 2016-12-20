@@ -8,7 +8,7 @@ public enum  ServerException {
     //error_code = 500
     ServerInternalError("Server Internal Exception", "服务器内部错"),
     //error_code = 400
-    ServerRejectClien("Server Reject Client Exception", "服务器拒绝或无法提供服务"),
+    ServerRejectClient("Server Reject Client Exception", "服务器拒绝或无法提供服务"),
     //redirect too many
     RedirectTooMuch("Server Redirected Too Much", "重定向次数过多");
 
