@@ -485,10 +485,68 @@ public abstract class BaseRequest<T> {
 
      /*________________________ enhanced setters & getters ________________________*/
 
+    /**
+     * cancel this request
+     */
+    public void cancel() {
+        this.isCancelled.set(true);
+    }
+
+    public <S extends BaseRequest<T>> S addUrlParam(String key, String value) {
+        if(value != null) {
+            if(requestParams == null) {
+                requestParams = new LinkedHashMap<>();
+            }
+            requestParams.put(key, value);
+        }
+        return (S) this;
+    }
+
+    public <S extends BaseRequest<T>> S addUrlParam(List<NameValuePair> list) {
+        if(list != null) {
+            if(requestParams == null) {
+                requestParams = new LinkedHashMap<>();
+            }
+            for(NameValuePair nvp : list) {
+                requestParams.put(nvp.getName(), nvp.getValue());
+            }
+        }
+        return (S) this;
+    }
 
 
+    public String createFullUri() {
+        //TODO 需要根据情况抛出自定义异常
+        return "";
+    }
 
+    /**
+     *  if uri is "www.abc.com"， then we should add prefix "http://" or "https://"
+     */
+    public <S extends BaseRequest<T>> S addUrlPrefix(String prefix) {
+        setUri(prefix + uri);
+        return (S) this;
+    }
 
+    /**
+     *  for url "www.abc.com/userManagement/add"
+     *  we can do this by firstly set uri="www.abc.com/", then addUrlSuffix "userManagement/add"
+     *
+     *  Note: there may have format error if we  not append slash to uri such as "www.abc.com/"
+     */
+    public <S extends BaseRequest<T>> S addUrlSuffix(String suffix) {
+        setUri(uri + suffix);
+        return (S) this;
+    }
+
+    /**
+     * 设置消息体和HTTP请求方法
+     */
+    public <S extends BaseRequest<T>> S setHttpBody(HttpBody httpBody, HttpMethods method) {
+        setHttpBody(httpBody);
+        setMethod(method);
+        return (S) this;
+    }
 
     /**************      addHeader API     ********************/
     public <S extends BaseRequest<T>> S addHeader(List<NameValuePair> values) {
