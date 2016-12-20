@@ -11,13 +11,6 @@ public abstract class DataParser<T> {
 
 
 
-
-
-
-
-
-
-
     /*__________________     setters & getters ____________________*/
 
     public BaseRequest getRequest() {

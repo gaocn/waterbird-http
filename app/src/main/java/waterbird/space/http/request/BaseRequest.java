@@ -719,25 +719,33 @@ public abstract class BaseRequest<T> {
         return reqToString();
     }
 
+    /**
+     *  打印数据的同时测试getter方法
+     */
     public String reqToString() {
         StringBuilder sb = new StringBuilder();
         sb.append("\n________________ request-start ________________")
+                .append("\n baseUrl          : ").append(getBaseUrl())
+                .append("\n uri              : ").append(getUri())
                 .append("\n full uri         : ").append(fullUri)
-                .append("\n id               : ").append(id)
-                .append("\n method           : ").append(method)
-                .append("\n tag              : ").append(tag)
-                .append("\n class            : ").append(getClass().getSimpleName())
-                .append("\n charSet          : ").append(charSet)
-                .append("\n maxRetryTimes    : ").append(maxRetryTimes)
-                .append("\n maxRedirectTimes : ").append(maxRediectTimes)
-                .append("\n httpListener     : ").append(httpListener)
-                .append("\n cancelled        : ").append(isCancelled.get())
-                .append("\n cacheMode        : ").append(cacheMode)
-                .append("\n cacheKey         : ").append(cacheKey)
-                .append("\n cacheExpireMillis: ").append(expiredCacheTimeInMillis)
-                .append("\n model            : ").append(paramModel)
-                .append("\n queryBuilder     : ").append(queryBuilder)
-                .append("\n httpBody         : ").append(httpBody)
+                .append("\n id               : ").append(getId())
+                .append("\n method           : ").append(getMethod())
+                .append("\n tag              : ").append(getTag())
+                .append("\n class            : ").append(this.getClass().getSimpleName())
+                .append("\n charSet          : ").append(getCharSet())
+                .append("\n socketTimeout    : ").append(getSocketTimeout())
+                .append("\n maxRetryTimes    : ").append(getMaxRetryTimes())
+                .append("\n maxRedirectTimes : ").append(getMaxRediectTimes())
+                .append("\n connectionTimeout: ").append(getConnectionTimeout())
+                .append("\n cacheExpireMillis: ").append(getExpiredCacheTimeInMillis())
+                .append("\n httpListener     : ").append(getHttpListener())
+                .append("\n cancelled        : ").append(isCancelled())
+                .append("\n cacheMode        : ").append(getCacheMode())
+                .append("\n cacheKey         : ").append(getCacheKey())
+                .append("\n cacheDir         : ").append(getCacheDir())
+                .append("\n paramModel       : ").append(getParamModel())
+                .append("\n queryBuilder     : ").append(getQueryBuilder())
+                .append("\n httpBody         : ").append(getHttpBody())
                 .append("\n dataParser       : ").append(getDataParser())
                 .append("\n header           ");
         if (headers == null) {
