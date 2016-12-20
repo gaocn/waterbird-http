@@ -1,14 +1,22 @@
 package waterbird.space.http.request;
 
+import android.net.Uri;
 import android.util.Log;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import waterbird.space.http.data.Constants;
 import waterbird.space.http.data.NameValuePair;
+import waterbird.space.http.exception.ClientException;
+import waterbird.space.http.exception.HttpClientException;
 import waterbird.space.http.listener.GlobalHttpListener;
 import waterbird.space.http.listener.HttpListener;
 import waterbird.space.http.log.HttpLog;
@@ -21,6 +29,7 @@ import waterbird.space.http.request.param.HttpParamModel;
 import waterbird.space.http.request.param.HttpRichParamModel;
 import waterbird.space.http.utils.HexUtil;
 import waterbird.space.http.utils.MD5Util;
+import waterbird.space.http.utils.UriUtil;
 
 
 /**
@@ -485,6 +494,34 @@ public abstract class BaseRequest<T> {
 
      /*________________________ enhanced setters & getters ________________________*/
 
+    public File getCachedFile() {
+        if(cacheDir == null) {
+            throw new RuntimeException("waterbird-http cache dir for request is null");
+        }
+        return new File(cacheDir, getCacheKey());
+    }
+
+    public <S extends BaseRequest<T>> S setCacheMode(CacheMode mode, String key) {
+        this.cacheMode = mode;
+        this.cacheKey = key;
+        return (S) this;
+    }
+
+    public <S extends BaseRequest<T>> S setCacheMode(CacheMode mode, long expiredTime, TimeUnit unit) {
+        this.cacheMode = mode;
+        this.expiredCacheTimeInMillis = unit.toMillis(expiredTime);
+        return (S) this;
+    }
+
+    public <S extends BaseRequest<T>> S setExpiredCachedTime(long expiredTime, TimeUnit unit) {
+        this.expiredCacheTimeInMillis = unit.toMillis(expiredTime);
+        return (S) this;
+    }
+
+    public boolean isCancelledOrInterrupted() {
+        return isCancelled.get() || Thread.currentThread().isInterrupted();
+    }
+
     /**
      * cancel this request
      */
@@ -515,8 +552,81 @@ public abstract class BaseRequest<T> {
     }
 
 
-    public String createFullUri() {
-        //TODO 需要根据情况抛出自定义异常
+    /**
+     * 构建完整的URI
+     * @return
+     * @throws HttpClientException
+     */
+    //TODO  需要完整测试
+    public String createFullUri() throws HttpClientException {
+       if(uri == null || !uri.startsWith(Constants.SCHEME_HTTP)) {
+           if(baseUrl == null) {
+               throw new HttpClientException(ClientException.UrlIsNull);
+           } else if(!baseUrl.startsWith(Constants.SCHEME_HTTP)) {
+               throw new HttpClientException(ClientException.IllegalSchema);
+           }
+           uri = uri == null ? baseUrl : baseUrl + uri;
+       }
+        try {
+            StringBuilder stringBuilder = new StringBuilder();
+            boolean hasQuestionMark = uri.contains("?");
+            if(hasQuestionMark && !uri.matches(ENCODED_URL_PATTERN)) {
+                //带有查询字符串的uri，并且不是encode uri，需要解析其中的参数
+                Uri uri = Uri.parse(this.uri);
+                Uri.Builder builder = uri.buildUpon();
+                builder.query(null);
+                //TODO  什么意思？？
+                for (String key : UriUtil.getQueryParameterNames(uri)) {
+                    for (String value : UriUtil.getQueryParameterValues(uri, key)) {
+                        builder.appendQueryParameter(key, value);
+                    }
+                }
+
+                if(HttpLog.isPrint) {
+                    HttpLog.d(TAG, "param origin uri: " + uri);
+                }
+
+                uri = builder.build();
+
+                if(HttpLog.isPrint) {
+                    HttpLog.d(TAG, "param encode uri: " + uri);
+                }
+                stringBuilder.append(uri);
+            } else {
+                stringBuilder.append(uri);
+            }
+
+            if(requestParams == null && paramModel == null) {
+                return stringBuilder.toString();
+            }
+
+            LinkedHashMap<String, String> map = getBasicParams();
+            int size = map.size();
+            if(size > 0) {
+                if(!hasQuestionMark) {
+                    stringBuilder.append("?");
+                } else if(uri.contains("=")) {
+                    stringBuilder.append("&");
+                }
+
+                int i = 0;
+                for(Map.Entry<String, String> v : map.entrySet()) {
+                    stringBuilder.append(URLEncoder.encode(v.getKey(), charSet))
+                            .append("=")
+                            .append(URLEncoder.encode(v.getValue(), charSet));
+                    if(++i != size) {
+                        stringBuilder.append("&");
+                    }
+                }
+            }
+            if(HttpLog.isPrint) {
+                HttpLog.d(TAG, "FullURL = " + stringBuilder.toString());
+            }
+            fullUri = stringBuilder.toString();
+            return fullUri;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         return "";
     }
 

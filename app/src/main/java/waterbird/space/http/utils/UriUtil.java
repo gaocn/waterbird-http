@@ -64,7 +64,7 @@ public class UriUtil {
      * @throws UnsupportedOperationException if this isn't a hierarchical URI
      * @throws NullPointerException          if key is null
      */
-    public static List<String> getQueryParameters(Uri uri, String key) {
+    public static List<String> getQueryParameterValues(Uri uri, String key) {
         if (uri.isOpaque()) {
             return Collections.emptyList();
         }
@@ -113,7 +113,7 @@ public class UriUtil {
      * Return a map of argument->value from a query in a URI
      * @param uri The URI
      */
-    private Map<String,String> getQueryParameter(Uri uri) {
+    public Map<String,String> getQueryParameter(Uri uri) {
         if (uri.isOpaque()) {
             return Collections.emptyMap();
         }
