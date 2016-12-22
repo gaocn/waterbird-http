@@ -113,7 +113,7 @@ public class UriUtil {
      * Return a map of argument->value from a query in a URI
      * @param uri The URI
      */
-    public Map<String,String> getQueryParameter(Uri uri) {
+    public static Map<String,String> getQueryParameter(Uri uri) {
         if (uri.isOpaque()) {
             return Collections.emptyMap();
         }

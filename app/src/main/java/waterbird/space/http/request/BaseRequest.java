@@ -40,11 +40,11 @@ import waterbird.space.http.utils.UriUtil;
 public abstract class BaseRequest<T> {
     private static final String TAG = "BaseRequest";
     /**
-     *^(http|www|ftp|)?(://)?(\\w+(-\\w+)*)(\\.(\\w+(-\\w+)*))*((:\\d+)?)(/(\\w+(-\\w+)*))*(\\.?(\\w)*)(\\?)?(((\\w*%)*(\\w*\\?)*(\\w*:)*(\\w*\\+)*(\\w*\\.)*(\\w*&)*(\\w*-)*(\\w*=)*(\\w*%)*(\\w*\\?)*(\\w*:)*(\\w*\\+)*(\\w*\\.)*(\\w*&)*(\\w*-)*(\\w*=)*)*(\\w*)*)$
-     * Encoded URL:
+     * 会匹配编码后的URL或者是没有需要编码的URL，若URL中出现需要编码的字符，例如：中文字符，特殊字符，则不会匹配成功
+     * 匹配成功：http://www.govind.space/search?scope=bbs&q=%E8%AF%AD%E8%A8%80
+     * 匹配失败：http://www.govind.space/search?scope=bbs&q=C语言
      */
-    //TODO  有待验证
-    private static final String ENCODED_URL_PATTERN = "^.+\\?(%[0-9a-fA-F]+|[=&0-9a-zA-Z_#\\-\\.\\*])*$";
+    private static final String ENCODED_URL_PATTERN = "^.+\\?(%[0-9a-fA-F]+|[=&A-Za-z0-9_#\\-\\.\\*])*$";
 
     /**
      * give an id to request
@@ -288,7 +288,13 @@ public abstract class BaseRequest<T> {
     }
 
     public <S extends BaseRequest<T>> S setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
+        if(!baseUrl.endsWith("/")) {
+            baseUrl += "/";
+            this.baseUrl = baseUrl;
+            HttpLog.d(TAG, "Adjust BaseUrl to ["+ baseUrl + "]");
+        } else {
+            this.baseUrl = baseUrl;
+        }
         return (S)this;
     }
 
@@ -553,7 +559,7 @@ public abstract class BaseRequest<T> {
 
 
     /**
-     * 构建完整的URI
+     * 构建完整的URI(创建URL问题)
      * @return
      * @throws HttpClientException
      */
@@ -570,17 +576,17 @@ public abstract class BaseRequest<T> {
         try {
             StringBuilder stringBuilder = new StringBuilder();
             boolean hasQuestionMark = uri.contains("?");
+            /** 在查询字符串中 有特殊字符需要 进行编码后才能构建 URL
+             * */
             if(hasQuestionMark && !uri.matches(ENCODED_URL_PATTERN)) {
-                //带有查询字符串的uri，并且不是encode uri，需要解析其中的参数
                 Uri uri = Uri.parse(this.uri);
                 Uri.Builder builder = uri.buildUpon();
                 builder.query(null);
-                //TODO  什么意思？？
-                for (String key : UriUtil.getQueryParameterNames(uri)) {
-                    for (String value : UriUtil.getQueryParameterValues(uri, key)) {
-                        builder.appendQueryParameter(key, value);
+                //对查询字符串中
+                for(Map.Entry<String, String> entry : UriUtil.getQueryParameter(uri).entrySet()) {
+                        //Encodes the key and value and then appends the parameter to the query string.
+                        builder.appendQueryParameter(entry.getKey(), entry.getValue());
                     }
-                }
 
                 if(HttpLog.isPrint) {
                     HttpLog.d(TAG, "param origin uri: " + uri);
@@ -600,6 +606,10 @@ public abstract class BaseRequest<T> {
                 return stringBuilder.toString();
             }
 
+            /**
+             * 按照http://www.govind.space/userManagement/add?id=2&name=govind&pwd=123&md5=eab34febc41212313bf3cd4a
+             * 方法将查询字符串requestParams中的参数采用key-value的方式添加到URL中
+             */
             LinkedHashMap<String, String> map = getBasicParams();
             int size = map.size();
             if(size > 0) {
@@ -610,6 +620,7 @@ public abstract class BaseRequest<T> {
                 }
 
                 int i = 0;
+                /** URLEncoder只能用来编码查询字符串，具体可以参考文章www.govind.space中的 "Java中URL编码 误区及防范" */
                 for(Map.Entry<String, String> v : map.entrySet()) {
                     stringBuilder.append(URLEncoder.encode(v.getKey(), charSet))
                             .append("=")
@@ -755,7 +766,7 @@ public abstract class BaseRequest<T> {
                 sb.append("\n|    ").append(String.format("%-20s", en.getKey())).append(" = ").append(en.getValue());
             }
         }
-        sb.append("\n paramMap         ");
+        sb.append("\n requestParams        ");
         if (requestParams == null) {
             sb.append(": null");
         } else {
