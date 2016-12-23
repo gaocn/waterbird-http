@@ -6,6 +6,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,7 +22,7 @@ import waterbird.space.http.listener.GlobalHttpListener;
 import waterbird.space.http.listener.HttpListener;
 import waterbird.space.http.log.HttpLog;
 import waterbird.space.http.parser.DataParser;
-import waterbird.space.http.request.builder.QueryBuilder;
+import waterbird.space.http.request.builder.ModelQueryBuilder;
 import waterbird.space.http.request.content.HttpBody;
 import waterbird.space.http.request.param.CacheMode;
 import waterbird.space.http.request.param.HttpMethods;
@@ -165,12 +166,12 @@ public abstract class BaseRequest<T> {
 
 
     /**
-     * use {@link QueryBuilder} to custom request into multiple format such as xml, json, etc
+     * use {@link ModelQueryBuilder} to custom request into multiple format such as xml, json, etc
      * default query builder translate request into json format
      *
      * Note: default query model is {@link waterbird.space.http.request.builder.JsonQueryBuilder}
      */
-    private QueryBuilder queryBuilder;
+    private ModelQueryBuilder queryBuilder;
 
 
     /**
@@ -427,11 +428,11 @@ public abstract class BaseRequest<T> {
         return (S)this;
     }
 
-    public QueryBuilder getQueryBuilder() {
+    public ModelQueryBuilder getQueryBuilder() {
         return queryBuilder;
     }
 
-    public <S extends BaseRequest<T>> S setQueryBuilder(QueryBuilder queryBuilder) {
+    public <S extends BaseRequest<T>> S setQueryBuilder(ModelQueryBuilder queryBuilder) {
         this.queryBuilder = queryBuilder;
         return (S)this;
     }
@@ -492,7 +493,13 @@ public abstract class BaseRequest<T> {
                     &&!((HttpRichParamModel)paramModel).isFieldsAttachToUrl()) {
                 return map;
             }
-            map.putAll(getQueryBuilder().buildPrimaryMap(paramModel));
+            try {
+                map.putAll(getQueryBuilder().buildPrimaryMap(paramModel));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
         }
 
         return map;
