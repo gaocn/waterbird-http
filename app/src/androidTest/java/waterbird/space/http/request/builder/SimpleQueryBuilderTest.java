@@ -43,6 +43,7 @@ public class SimpleQueryBuilderTest {
 
             @Override
             public CharSequence buildValue() {
+                HttpLog.d(TAG, "buildValue invoked");
                 return "HttpCustomParam：3243";
             }
         }
@@ -50,6 +51,9 @@ public class SimpleQueryBuilderTest {
 
     @Test
     public void buildSecondaryValue() throws Exception {
+        /*
+            {arrayLists=[[101,102,103],[201,201]],}{cust=HttpCustomParam%EF%BC%9A3243,}{isTestMode=false,}{map={111=111str,333=333str,222=222str},}{objects=[23,23]}
+         */
         SimpleQueryBuilder simpleQueryBuilder = new SimpleQueryBuilder();
         HttpLog.d(TAG, simpleQueryBuilder.buildSecondaryValue(new TestModel()).toString());
     }

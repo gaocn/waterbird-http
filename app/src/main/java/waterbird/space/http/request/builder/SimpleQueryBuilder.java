@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Map;
 
 import waterbird.space.http.data.Constants;
-import waterbird.space.http.log.HttpLog;
 import waterbird.space.http.request.param.HttpCustomParam;
 
 /**
