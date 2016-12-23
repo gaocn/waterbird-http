@@ -9,7 +9,8 @@ import waterbird.space.http.request.BaseRequest;
 public abstract class DataParser<T> {
     private BaseRequest request;
 
-
+    public abstract  <T> T getData();
+    public abstract <T> T getRawString();
 
     /*__________________     setters & getters ____________________*/
 

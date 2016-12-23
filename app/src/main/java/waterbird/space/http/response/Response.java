@@ -20,7 +20,6 @@ import waterbird.space.http.request.BaseRequest;
  */
 public interface Response<T> {
 
-
     ArrayList<NameValuePair> getHeaders();
 
     HttpStatus getHttpStatus();
@@ -38,7 +37,7 @@ public interface Response<T> {
 
     String getContentType();
 
-    String getCharSet();
+    String getCharset();
 
     long getUseTime();
 
@@ -61,5 +60,4 @@ public interface Response<T> {
     String resToString();
 
     void printInfo();
-
 }
