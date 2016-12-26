@@ -15,6 +15,9 @@ import waterbird.space.http.parser.FileCacheableParser;
 
 public class BitmapParser extends FileCacheableParser<Bitmap> {
     public BitmapParser(){}
+    public BitmapParser(File file){
+        this.file = file;
+    }
 
     @Override
     protected Bitmap parseDiskCache(File file) throws IOException {
