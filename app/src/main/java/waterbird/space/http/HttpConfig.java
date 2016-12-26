@@ -7,6 +7,8 @@ package waterbird.space.http;
 public class HttpConfig {
     private static final String TAG = "HttpConfig";
 
+    public static final String VERSION = "v3";
+
     /**
      * buffer size 4KB, one page size
      */
