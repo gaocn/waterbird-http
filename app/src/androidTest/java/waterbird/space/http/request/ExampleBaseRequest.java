@@ -2,7 +2,7 @@ package waterbird.space.http.request;
 
 import waterbird.space.http.listener.HttpListener;
 import waterbird.space.http.parser.DataParser;
-import waterbird.space.http.parser.TestDataParser;
+import waterbird.space.http.parser.impl.StringParser;
 import waterbird.space.http.request.param.HttpParamModel;
 
 /**
@@ -28,6 +28,6 @@ public class ExampleBaseRequest extends BaseRequest<String> {
 
     @Override
     public DataParser<String> createDataParser() {
-        return new TestDataParser();
+        return new StringParser();
     }
 }

@@ -4,6 +4,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import waterbird.space.http.parser.DataParser;
+import waterbird.space.http.parser.impl.JsonParser;
 import waterbird.space.http.request.param.HttpParamModel;
 
 /**
@@ -42,7 +43,6 @@ public abstract class JsonBaseRequest<T> extends BaseRequest<T> {
 
     @Override
     public DataParser<T> createDataParser() {
-//        return new JsonParser<T>(getResultType());
-        return null;
+        return new JsonParser<T>(resultType);
     }
 }
