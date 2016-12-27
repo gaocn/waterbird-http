@@ -12,7 +12,7 @@ import waterbird.space.http.request.BaseRequest;
  * Use Facade
  *  providing developers with easy access to the results of
  *      {@link waterbird.space.http.WaterBirdHttp#execute(waterbird.space.http.request.BaseRequest)},
- *  and with information of status,request,charset,etc.
+ *  and with information of status,request,infoCharset,etc.
  *
  * Facade模式：
  *      外观的包装，使应用程序只能看到外观对象，而不会看到具体的细节对象，这样无疑会降低应用程序的复杂度，并且提高了程序的可维护性。

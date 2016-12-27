@@ -96,7 +96,7 @@ public abstract class BaseRequest<T> {
     private Object tag;
 
     /**
-     * charset of requset, default is utf-8
+     * infoCharset of requset, default is utf-8
      */
     private String charSet;
 

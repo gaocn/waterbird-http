@@ -1,7 +1,11 @@
 package waterbird.space.http.request.content.multi;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 
 import waterbird.space.http.data.Constants;
@@ -23,7 +27,35 @@ public class MultipartBody extends HttpBody {
         contentType = Constants.MIME_TYPE_FORM_DATA + Constants.BOUNDARY_PARAM + boundaryCreater.getBoundary();
     }
 
-    //TODO
+    public MultipartBody addPart(BasePart part) {
+        if(part == null) {
+            return this;
+        }
+
+        /**  note: set multipart to every part, so that we can get progress of these part */
+        part.setMultipartBody(this);
+        part.createHeader(boundaryCreater.getBoundaryLine());
+        httpParts.add(part);
+
+        return this;
+    }
+
+    public MultipartBody addPart(String key, InputStream inputStream, String fileName, String mimeType) {
+        return addPart(new InputStreamPart(key, mimeType, inputStream, fileName));
+    }
+
+    public MultipartBody addPart(String key, String data, String charset, String mimeType) throws UnsupportedEncodingException {
+        return addPart(new StringPart(key, data, charset, mimeType));
+    }
+
+    public MultipartBody addPart(String key, String mimeType, byte[] data) {
+        return addPart(new BytesPart(key, mimeType, data));
+    }
+
+    public MultipartBody addPart(String key, String mimeType, File file) throws FileNotFoundException {
+        return addPart(new FilePart(key, mimeType, file));
+    }
+
 
 
     public long getContentLength() {

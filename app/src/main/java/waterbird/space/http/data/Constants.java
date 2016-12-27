@@ -50,7 +50,7 @@ public class Constants {
     public static final String CONN_KEEP_ALIVE = "Keep-Alive";
 
     public static final String DEFAULT_CHARSET = Charsets.UTF_8;
-    public final static String CHARSET_PARAM = "; charset=";
+    public final static String CHARSET_PARAM = "; infoCharset=";
     public final static String BOUNDARY_PARAM = "; boundary=";
     public static final String MIME_TYPE_TEXT = "text/plain";
     public static final String MIME_TYPE_JSON = "application/json";

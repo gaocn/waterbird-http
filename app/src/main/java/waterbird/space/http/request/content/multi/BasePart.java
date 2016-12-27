@@ -15,12 +15,12 @@ import waterbird.space.http.utils.StringCodingUtils;
  */
 
 public abstract class BasePart {
-    protected static final Charset charset = BoundaryCreater.charset;
-    public static final byte[] CR_LF = StringCodingUtils.getBytes("\r\n", charset);
+    protected static final Charset infoCharset = BoundaryCreater.charset;
+    public static final byte[] CR_LF = StringCodingUtils.getBytes("\r\n", infoCharset);
     public static final byte[] TRANSFER_ENCODING_BINARY =
-            StringCodingUtils.getBytes("Content-Transfer-Encoding: binary\r\n", charset);
+            StringCodingUtils.getBytes("Content-Transfer-Encoding: binary\r\n", infoCharset);
     public static final byte[] TRANSFER_ENCODING_8BIT =
-            StringCodingUtils.getBytes("Content-Transfer-Encoding: 8bit\r\n", charset);
+            StringCodingUtils.getBytes("Content-Transfer-Encoding: 8bit\r\n", infoCharset);
 
     protected String key;
     protected String mimeType = Constants.MIME_TYPE_OCTET_STREAM;

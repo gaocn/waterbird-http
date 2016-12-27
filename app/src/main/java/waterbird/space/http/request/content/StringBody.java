@@ -36,7 +36,7 @@ public class StringBody extends HttpBody {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        //Content-Type:text/plain;charset=utf-8
+        //Content-Type:text/plain;infoCharset=utf-8
         this.contentType = mimeType + Constants.CHARSET_PARAM + charset;
     }
 
@@ -70,7 +70,7 @@ public class StringBody extends HttpBody {
     @Override
     public String toString() {
         return "StringBody{" +
-                "charset='" + charset + '\'' +
+                "infoCharset='" + charset + '\'' +
                 ", mimeType='" + mimeType + '\'' +
                 ", string='" + string + '\'' +
                 '}';

@@ -105,7 +105,7 @@ public class UrlEncodedFormBody extends StringBody {
     public String toString() {
         return "StringEntity{" +
                 "string='" + string + '\'' +
-                ", charset='" + charset + '\'' +
+                ", infoCharset='" + charset + '\'' +
                 ", contentType='" + contentType + '\'' +
                 '}';
     }
