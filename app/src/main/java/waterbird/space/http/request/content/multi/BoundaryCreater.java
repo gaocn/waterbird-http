@@ -7,7 +7,8 @@ import waterbird.space.http.data.Constants;
 import waterbird.space.http.utils.StringCodingUtils;
 
 /**
- * TODO 需要直达数据上传时是的格式及分割线，后面补充
+ * Content-Disposition: form-data; name="img"; filename="a.png"；boundary=----------------------------83ff53821b7c
+ * Content-Type: application/octet-stream
  */
 public class BoundaryCreater {
     public static final Charset charset         = Charset.forName(Constants.DEFAULT_CHARSET);

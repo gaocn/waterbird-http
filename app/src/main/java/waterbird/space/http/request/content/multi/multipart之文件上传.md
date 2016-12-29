@@ -26,6 +26,7 @@ Notes: 下面中的每一行都是以"\r\n"结束
     Content-Disposition: form-data; name="text1"
 
     text default
+
     -----------------------------735323031399963166993862150
     Content-Disposition: form-data; name="text2"
 
@@ -45,6 +46,8 @@ Notes: 下面中的每一行都是以"\r\n"结束
     Content-Disposition: form-data; name="file3"; filename="binary"
     Content-Type: application/octet-stream
 
+    ABE82B3C6EF7
+
     -----------------------------735323031399963166993862150--
 ```
 
@@ -63,3 +66,4 @@ Notes: 下面中的每一行都是以"\r\n"结束
 - multipart/form-data: adds a few bytes of boundary overhead to the message, and must spend some time calculating it, but sends each byte in one byte.
 - application/x-www-form-urlencoded: has a single byte boundary per field (&), but adds a linear overhead factor of 3x for every non-printable character.
 
+boundary出现在每一个part的开始处，并且后面跟着CRLF，CRLF后面只能跟header field、next part或者若没有前两部分时后面跟着两个CRLFs；若后面没有其他body part时，格式是boundary后面加个横线(boundary--)。由于boundary是区分不同part的字符串，因此要保证part body中没有boundary，因此需要实现一个特殊的boundary，一个简单的boundary例子：boundary="--abcd--"，一个结束的boundary为"--abcd----"。
