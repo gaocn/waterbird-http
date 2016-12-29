@@ -7,6 +7,6 @@ public enum OverloadPolicy {
     DiscardNewTaskInQueue,
     DiscardOldTaskInQueue,
     DiscardCurrentTask,
-    CallerRuns,
+    CallerRuns, //task running in caller thread
     ThrowExecption
 }
