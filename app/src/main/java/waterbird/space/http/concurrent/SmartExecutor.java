@@ -3,7 +3,11 @@ package waterbird.space.http.concurrent;
 import android.util.Log;
 
 import java.util.LinkedList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -243,12 +247,47 @@ public class SmartExecutor implements Executor{
 
     /*_____________________  API  Uesd to Submit Task    ____________________*/
 
+    protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
+        return new FutureTask<T>(runnable, value);
+    }
 
+    protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
+        return new FutureTask<T>(callable);
+    }
 
+    /**
+     * submit runnable
+     */
+    public Future<?> submit(Runnable task) {
+        RunnableFuture<Void> fTask = newTaskFor(task, null);
+        execute(fTask);
+        return fTask;
+    }
 
+    /**
+     * submit runnable
+     */
+    public <T> Future<T> submit(Runnable task, T result) {
+        RunnableFuture<T> fTask = newTaskFor(task, result);
+        execute(fTask);
+        return fTask;
+    }
 
+    /**
+     * submit callable
+     */
+    public <T> Future<T> submit(Callable<T> task) {
+        RunnableFuture<T> ftask = newTaskFor(task);
+        execute(ftask);
+        return ftask;
+    }
 
-
+    /**
+     * submit RunnableFuture task
+     */
+    public <T> void submit(RunnableFuture<T> task) {
+        execute(task);
+    }
 
     /*______________________     getters & setters        _____________________*/
 
