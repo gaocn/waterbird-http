@@ -114,6 +114,7 @@ public class SmartExecutor implements Executor{
                 },
                 new ThreadPoolExecutor.DiscardPolicy() /** 对拒绝任务直接无声抛弃，没有异常信息 */
         );
+
     }
 
     public static ThreadPoolExecutor getThreadPoolExecutor() {
